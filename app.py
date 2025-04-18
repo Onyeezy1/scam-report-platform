@@ -182,6 +182,11 @@ def approve_report(report_id):
     db.session.commit()
     flash('Report approved successfully.', 'success')
     return redirect(url_for('admin_dashboard'))
+    
+@app.route('/')
+def home():
+    return render_template('home.html')
+    
 
 
 if __name__ == '__main__':
