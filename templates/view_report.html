@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scam Report Details</title>
+</head>
+<body>
+    <h1>{{ report.title }}</h1>
+    <p><strong>Description:</strong> {{ report.description }}</p>
+
+    {% if report.scam_website %}
+        <p><strong>Scam Website:</strong> <a href="{{ report.scam_website }}" target="_blank">{{ report.scam_website }}</a></p>
+    {% endif %}
+
+    {% if report.evidence %}
+        <p><strong>Evidence:</strong></p>
+        <img src="{{ url_for('static', filename='uploads/' + report.evidence.split('/')[-1]) }}" alt="Evidence" style="max-width:100%; height:auto;">
+    {% endif %}
+
+    <h2>Credibility Voting</h2>
+    <p>Upvotes: {{ upvotes }} | Downvotes: {{ downvotes }}</p>
+    <form method="POST" action="{{ url_for('vote_report', report_id=report.id, vote_type='upvote') }}">
+        <button type="submit">👍 Upvote</button>
+    </form>
+    <form method="POST" action="{{ url_for('vote_report', report_id=report.id, vote_type='downvote') }}">
+        <button type="submit">👎 Downvote</button>
+    </form>
+
+    <h2>Comments</h2>
+    <ul>
+        {% for comment in report.comments %}
+            <li><strong>User {{ comment.user_id }}:</strong> {{ comment.text }}</li>
+        {% endfor %}
+    </ul>
+
+    {% if current_user.is_authenticated %}
+        <h3>Add a Comment</h3>
+        <form method="POST">
+            <textarea name="comment" placeholder="Enter your comment" required></textarea><br>
+            <button type="submit">Submit Comment</button>
+        </form>
+    {% else %}
+        <p><a href="{{ url_for('login') }}">Log in</a> to add a comment.</p>
+    {% endif %}
+
+    <br>
+    <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+</body>
+</html>
